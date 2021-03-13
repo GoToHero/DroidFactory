@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.Px
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
@@ -22,7 +21,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kotlinx.coroutines.runBlocking
@@ -56,6 +54,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private lateinit var adapter: CarouselAdapter
     private lateinit var snapHelper: SnapHelper
     private lateinit var mems: List<MemsData>
+    private var currentItemId: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -96,8 +95,8 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    binding.memeDescriptions.text =
-                        getMemById((layoutManager as CarouselLayoutManager).currentItemId)?.description
+                    currentItemId = (layoutManager as CarouselLayoutManager).currentItemId
+                    binding.memeDescriptions.text = getMemById(currentItemId)?.description
                 }
             })
 
@@ -173,7 +172,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                     translationXForward = 2 * translationXFromScale
                 }
 
-                if (child.isActivated && translationDirection == 1) currentItemId = (child as OverlayableImageView).mem?.id
+                if (child.isActivated) currentItemId = (child as OverlayableImageView).mem?.id
             }
         }
 
