@@ -11,6 +11,8 @@ import ru.androidacademy.droidfactory.network.MemsResources
 
 class MemesScreenFragmentViewModel : ViewModel() {
 
+    private var currentId = -1
+
     private var _memes = MutableLiveData<List<MemsData>>()
     val memes: LiveData<List<MemsData>> get() = _memes
 
@@ -35,7 +37,19 @@ class MemesScreenFragmentViewModel : ViewModel() {
         }
     }
 
-    fun onLike() {
-        //TODO update live data
+
+    fun onLike(memId: Int) {
+        if (memId != currentId) {
+            viewModelScope.launch {
+                val newMemList = _memes.value?.onEach {
+                    if (memId == it.id) {
+                        it.isLiked = true
+                    }
+                }.orEmpty()
+                _memes.value = newMemList
+            }
+            currentId = memId
+        }
+
     }
 }

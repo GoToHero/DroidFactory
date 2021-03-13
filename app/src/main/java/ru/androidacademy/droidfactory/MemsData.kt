@@ -5,7 +5,7 @@ data class MemsData(
     val description: String,
     val gifURL: String,
     val previewURL: String,
-    val isLiked: Boolean,
+    var isLiked: Boolean,
     val width: String,
     val height: String,
 ) {

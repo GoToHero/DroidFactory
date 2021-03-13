@@ -392,7 +392,8 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     }
 
     override fun onReceiveFaceLike() {
-        viewModel.onLike()
+        //TODO нужно кидать сюда айди мема
+        viewModel.onLike(-1)
     }
 
     override fun onRequestPermissionsResult(
