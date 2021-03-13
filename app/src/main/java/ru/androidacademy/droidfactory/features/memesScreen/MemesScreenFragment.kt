@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.Px
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -50,7 +52,6 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private var preview: CameraSourcePreview? = null
     private var graphicOverlay: GraphicOverlay? = null
 
-    //TODO
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: CarouselAdapter
     private lateinit var snapHelper: SnapHelper
@@ -74,20 +75,9 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
         checkCameraPermission()
         startCameraSource()
 
-        //TODO
-//        viewModel.viewModelScope.launch {
-//            mems = when (Repository.initialize()) {
-//                is MemsResources.Success -> Repository.initialize().data!!
-//                is MemsResources.Error -> Repository.initialize().data!!
-//                is MemsResources.Loading -> TODO()
-//            }
-//
-//            mems = Repository.initialize().data
-//        }
-
+        //TODO transfer to viewModel
         runBlocking { mems = Repository.initialize().data!! }
         Log.d("WTF", mems.joinToString("\n"))
-
 
         layoutManager = CarouselLayoutManager(requireContext())
         adapter = CarouselAdapter(mems)
@@ -302,7 +292,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                         .load(imgUri)
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .transform(
-                            FitCenter(),
+                            CenterCrop(),
                             RoundedCorners(resources.getDimensionPixelSize(R.dimen.spacing_2x))
                         )
                         .into(binding.imageView)
@@ -314,6 +304,16 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
         init {
             layoutTransition = LayoutTransition() // android:animateLayoutChanges="true"
             isActivated = false
+        }
+
+        override fun setActivated(activated: Boolean) {
+            val isChanging = activated != isActivated
+            super.setActivated(activated)
+
+//            if (isChanging) {
+//                // Switch between VISIBLE and INVISIBLE
+//                binding.sendButton.isInvisible = !activated
+//            }
         }
     }
 
