@@ -31,4 +31,7 @@ class MemesScreenFragmentViewModel : ViewModel() {
         }
     }
 
+    fun onLike() {
+        //TODO update live data
+    }
 }
