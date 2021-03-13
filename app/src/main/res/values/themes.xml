@@ -5,7 +5,7 @@
 
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="background">@color/background_color</item>
+
 
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -16,9 +16,6 @@
         <item name="colorSecondaryVariant">@color/colorPrimaryDark</item>
         <item name="colorOnSecondary">@color/colorAccent</item>
 
-        <!-- margin and padding-->
-        <item name="android:layout_marginStart">@dimen/spacing_6x</item>
-        <item name="android:layout_marginEnd">@dimen/spacing_6x</item>
 
     </style>
 
