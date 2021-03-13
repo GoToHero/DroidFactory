@@ -7,4 +7,7 @@
     <color name="text_color">#000A12</color>
     <color name="background_color">#63CCFF</color>
     <color name="background_color_dark">#039BE5</color>
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_grey">#302F2B</color>
+    <color name="color_grey_light">#9C9A91</color>
 </resources>
