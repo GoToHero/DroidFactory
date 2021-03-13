@@ -56,19 +56,14 @@ class FaceDetectorProcessor(context: Context, val listener: FaceResultListener) 
   override fun onSuccess(faces: List<Face>, graphicOverlay: GraphicOverlay) {
     for (face in faces) {
       graphicOverlay.add(FaceGraphic(graphicOverlay, face))
-
       resolveSmile(face.smilingProbability)
-
-
-      logExtrasForTesting(face)
     }
   }
 
   private fun resolveSmile(smileValue: Float) {
-    //TODO добавить логику по считыванию улыбки
-
-    //TODO send data to listener
-    listener.onReceiveBarcode()
+    if (smileValue >= 0.60f) {
+      listener.onReceiveFaceLike()
+    }
   }
 
   override fun onFailure(e: Exception) {
@@ -78,58 +73,5 @@ class FaceDetectorProcessor(context: Context, val listener: FaceResultListener) 
   companion object {
     private const val TAG = "FaceDetectorProcessor"
     private const val MANUAL_TESTING_LOG = "LogTagForTest"
-    private fun logExtrasForTesting(face: Face?) {
-      if (face != null) {
-        // All landmarks
-        val landMarkTypes = intArrayOf(
-          FaceLandmark.MOUTH_BOTTOM,
-          FaceLandmark.MOUTH_RIGHT,
-          FaceLandmark.MOUTH_LEFT,
-          FaceLandmark.RIGHT_EYE,
-          FaceLandmark.LEFT_EYE,
-          FaceLandmark.RIGHT_EAR,
-          FaceLandmark.LEFT_EAR,
-          FaceLandmark.RIGHT_CHEEK,
-          FaceLandmark.LEFT_CHEEK,
-          FaceLandmark.NOSE_BASE
-        )
-        val landMarkTypesStrings = arrayOf(
-          "MOUTH_BOTTOM",
-          "MOUTH_RIGHT",
-          "MOUTH_LEFT",
-          "RIGHT_EYE",
-          "LEFT_EYE",
-          "RIGHT_EAR",
-          "LEFT_EAR",
-          "RIGHT_CHEEK",
-          "LEFT_CHEEK",
-          "NOSE_BASE"
-        )
-        for (i in landMarkTypes.indices) {
-          val landmark = face.getLandmark(landMarkTypes[i])
-          if (landmark == null) {
-            Log.v(
-              MANUAL_TESTING_LOG,
-              "No landmark of type: " + landMarkTypesStrings[i] + " has been detected"
-            )
-          } else {
-            val landmarkPosition = landmark.position
-            val landmarkPositionStr =
-              String.format(Locale.US, "x: %f , y: %f", landmarkPosition.x, landmarkPosition.y)
-            Log.v(
-              MANUAL_TESTING_LOG,
-              "Position for face landmark: " +
-                landMarkTypesStrings[i] +
-                " is :" +
-                landmarkPositionStr
-            )
-          }
-        }
-        Log.v(
-          MANUAL_TESTING_LOG,
-          "face tracking id: " + face.trackingId
-        )
-      }
-    }
   }
 }
