@@ -1,6 +1,5 @@
 package ru.androidacademy.droidfactory
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.androidacademy.droidfactory.network.DevelopersLifeApi

@@ -8,4 +8,6 @@ data class MemsData(
     val isLiked: Boolean,
     val width: String,
     val height: String,
-)
+) {
+    val aspectRatio: Float get() = width.toFloat() / height.toFloat()
+}
