@@ -51,10 +51,11 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private var preview: CameraSourcePreview? = null
     private var graphicOverlay: GraphicOverlay? = null
 
-    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var layoutManager: CarouselLayoutManager
     private lateinit var adapter: CarouselAdapter
     private lateinit var snapHelper: SnapHelper
     private lateinit var mems: List<MemsData>
+    private var currentItemId: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,8 +99,27 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
             addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
             addItemDecoration(BoundsOffsetDecoration())
 
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    currentItemId = (layoutManager as CarouselLayoutManager).currentItemId
+                    binding.memeDescriptions.text = getMemById(currentItemId)?.description
+                }
+            })
+
             snapHelper.attachToRecyclerView(this)
         }
+    }
+
+    private fun getMemById(id: Int?): MemsData? {
+        for(mem in mems) {
+            if (id == mem.id) {
+                return mem
+            }
+        }
+
+        return null
     }
 
     class CarouselLayoutManager(
@@ -110,6 +130,8 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
 
         private val prominentThreshold =
             context.resources.getDimensionPixelSize(R.dimen.spacing_18x)
+
+        var currentItemId: Int? = 0
 
         override fun onLayoutCompleted(state: RecyclerView.State?) =
             super.onLayoutCompleted(state).also { scaleChildren() }
@@ -153,11 +175,12 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                 if (translationXFromScale > 0 && i >= 1) {
                     // Edit previous child
                     getChildAt(i - 1)!!.translationX += 2 * translationXFromScale
-
                 } else if (translationXFromScale < 0) {
                     // Pass on to next child
                     translationXForward = 2 * translationXFromScale
                 }
+
+                if (child.isActivated) currentItemId = (child as OverlayableImageView).mem?.id
             }
         }
 
