@@ -10,27 +10,23 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.isVisible
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.Px
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import kotlinx.coroutines.runBlocking
+import com.google.android.material.snackbar.Snackbar
 import ru.androidacademy.droidfactory.MemsData
 import ru.androidacademy.droidfactory.R
-import ru.androidacademy.droidfactory.Repository
 import ru.androidacademy.droidfactory.databinding.MemesScreenFragmentBinding
 import ru.androidacademy.droidfactory.databinding.ViewOverlayableImageBinding
 import ru.androidacademy.droidfactory.domain.CameraSource
@@ -80,13 +76,18 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
         checkCameraPermission()
         startCameraSource()
 
+
         //TODO transfer to viewModel
-        runBlocking { mems = Repository.initialize().data!! }
-        Log.d("WTF", mems.joinToString("\n"))
+        //runBlocking { mems = Repository.initialize().data!! }
+        // Log.d("WTF", mems.joinToString("\n"))
 
         layoutManager = CarouselLayoutManager(requireContext())
-        adapter = CarouselAdapter(mems)
+        adapter = CarouselAdapter()
         snapHelper = PagerSnapHelper()
+
+        viewModel.memes.observe(viewLifecycleOwner, { memList ->
+            adapter.bindMems(memList)
+        })
 
         with(binding.rvMemes) {
             setItemViewCacheSize(4)
@@ -168,9 +169,10 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     }
 
 
-    class CarouselAdapter(private val mems: List<MemsData>) :
+    class CarouselAdapter :
         RecyclerView.Adapter<CarouselAdapter.VH>() {
 
+        private var mems: List<MemsData> = listOf()
         private var hasInitParentDimensions = false
         private var maxImageWidth: Int = 0
         private var maxImageHeight: Int = 0
@@ -214,6 +216,11 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                 val rv = vh.overlayableImageView.parent as RecyclerView
                 rv.smoothScrollToCenteredPosition(position)
             }
+        }
+
+        fun bindMems(newMems: List<MemsData>) {
+            mems = newMems
+            notifyDataSetChanged()
         }
 
         private fun RecyclerView.smoothScrollToCenteredPosition(position: Int) {
@@ -345,7 +352,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                 .show()
         })
     }
-}
+
     private fun createCameraSource() {
         if (cameraSource == null) {
             cameraSource = CameraSource(requireActivity(), graphicOverlay)
