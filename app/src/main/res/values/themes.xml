@@ -1,16 +1,58 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <!-- Base application theme. -->
-    <style name="Theme.DroidFactory" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.DroidFactory" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="background">@color/background_color</item>
+
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/colorAccent</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <item name="colorSecondary">@color/colorPrimary</item>
+        <item name="colorSecondaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnSecondary">@color/colorAccent</item>
+
+        <!-- margin and padding-->
+        <item name="android:layout_marginStart">@dimen/spacing_6x</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_6x</item>
+
     </style>
+
+    <!--    Common  -->
+
+    <style name="ProgressBarStyle" parent="android:Widget.Material.ProgressBar">
+        <item name="android:indeterminateTint">@color/text_color</item>
+    </style>
+
+    <style name="TextView" parent="Theme.DroidFactory">
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+
+    <style name="TextView.TextNormal" parent="TextView">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textFontWeight" tools:ignore="NewApi">400</item>
+    </style>
+
+
+    <style name="TextView.Title" parent="TextView.TextNormal">
+        <item name="android:textSize">@dimen/text_size_title</item>
+        <item name="android:layout_marginTop">@dimen/spacing_12x</item>
+    </style>
+
+    <style name="TextView.Descriptions" parent="TextView.TextNormal">
+        <item name="android:textSize">@dimen/text_size_descriptions</item>
+        <item name="android:layout_marginTop">@dimen/spacing_18x</item>
+    </style>
+
+    <style name="RecyclerView" parent="Theme.DroidFactory">
+        <item name="android:layout_marginTop">@dimen/spacing_18x</item>
+    </style>
+
+
 </resources>
