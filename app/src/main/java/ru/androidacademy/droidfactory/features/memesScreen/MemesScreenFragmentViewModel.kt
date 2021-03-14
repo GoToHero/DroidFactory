@@ -18,6 +18,9 @@ class MemesScreenFragmentViewModel : ViewModel() {
     private var _memes = MutableLiveData<List<MemsData>>()
     val memes: LiveData<List<MemsData>> get() = _memes
 
+    private var _likedMem = MutableLiveData<MemsData>()
+    val likedMem: LiveData<MemsData> get() = _likedMem
+
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
@@ -25,11 +28,11 @@ class MemesScreenFragmentViewModel : ViewModel() {
     val loadingState: LiveData<Boolean> get() = _mutableLoadingState
 
     init {
-        handleLoadedData{ Repository.initialize() }
+        handleLoadedData { Repository.initialize() }
     }
 
     fun loadNextPage() {
-        handleLoadedData{ Repository.getPage(currentPage) }
+        handleLoadedData { Repository.getPage(currentPage) }
     }
 
     private fun handleLoadedData(loadData: suspend () -> MemsResources<List<MemsData>>) {
@@ -52,16 +55,13 @@ class MemesScreenFragmentViewModel : ViewModel() {
 
     fun onLike(memId: Int) {
         if (memId != currentId) {
-            viewModelScope.launch {
-                val newMemList = _memes.value?.onEach {
-                    if (memId == it.id) {
-                        it.isLiked = true
-                    }
-                }.orEmpty()
-                _memes.value = newMemList
+            memes.value?.forEach {
+                if (memId == it.id) {
+                    it.isLiked = true
+                    _likedMem.value = it
+                }
             }
-            currentId = memId
         }
-
+        currentId = memId
     }
 }
