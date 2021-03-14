@@ -1,17 +1,17 @@
-package ru.androidacademy.droidfactory.features.memesScreen
-
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import ru.androidacademy.droidfactory.MemsData
 import ru.androidacademy.droidfactory.R
+import ru.androidacademy.droidfactory.features.memesScreen.MemesScreenFragment
 import kotlin.math.roundToInt
 
 class CarouselAdapter :
     RecyclerView.Adapter<CarouselAdapter.VH>() {
 
-    private var mems: List<MemsData> = listOf()
+    var mems: MutableList<MemsData> = mutableListOf()
+        private set
     private var hasInitParentDimensions = false
     private var maxImageWidth: Int = 0
     private var maxImageHeight: Int = 0
@@ -58,7 +58,7 @@ class CarouselAdapter :
     }
 
     fun bindMems(newMems: List<MemsData>) {
-        mems = newMems
+        mems.addAll(newMems)
         notifyDataSetChanged()
     }
 
