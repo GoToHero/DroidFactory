@@ -39,12 +39,10 @@
 
     <style name="TextView.Title" parent="TextView.TextNormal">
         <item name="android:textSize">@dimen/text_size_title</item>
-        <item name="android:layout_marginTop">@dimen/spacing_12x</item>
     </style>
 
     <style name="TextView.Descriptions" parent="TextView.TextNormal">
         <item name="android:textSize">@dimen/text_size_descriptions</item>
-        <item name="android:layout_marginTop">@dimen/spacing_18x</item>
     </style>
 
     <style name="RecyclerView" parent="Theme.DroidFactory">

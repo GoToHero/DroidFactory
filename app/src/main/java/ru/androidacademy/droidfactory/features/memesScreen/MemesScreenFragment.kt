@@ -34,7 +34,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private var preview: CameraSourcePreview? = null
     private var graphicOverlay: GraphicOverlay? = null
 
-    private lateinit var layoutManager: CarouselLayoutManager
+    private lateinit var layoutManager: CarouselAdapter.CarouselLayoutManager
     private lateinit var adapter: CarouselAdapter
     private lateinit var snapHelper: SnapHelper
     private var currentItemId: Int? = null
@@ -60,7 +60,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
         startCameraSource()
 
 
-        layoutManager = CarouselLayoutManager(requireContext())
+        layoutManager = CarouselAdapter.CarouselLayoutManager(requireContext())
         adapter = CarouselAdapter()
         snapHelper = PagerSnapHelper()
 
@@ -78,12 +78,12 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
             adapter = this@MemesScreenFragment.adapter
 
             val spacing = resources.getDimensionPixelSize(R.dimen.spacing_4x)
-            addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
-            addItemDecoration(BoundsOffsetDecoration())
+            addItemDecoration(CarouselAdapter.LinearHorizontalSpacingDecoration(spacing))
+            addItemDecoration(CarouselAdapter.BoundsOffsetDecoration())
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-                val layoutManagerRef = (layoutManager as CarouselLayoutManager)
+                val layoutManagerRef = (layoutManager as CarouselAdapter.CarouselLayoutManager)
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -182,7 +182,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
 
     override fun onReceiveFaceLike() {
         //TODO нужно кидать сюда айди мема
-        viewModel.onLike(-1)
+        viewModel.onLike(currentItemId ?: -1)
     }
 
     override fun onRequestPermissionsResult(
