@@ -11,6 +11,8 @@ import ru.androidacademy.droidfactory.network.MemsResources
 
 class MemesScreenFragmentViewModel : ViewModel() {
 
+    private var currentPage: Int = 0
+
     private var _memes = MutableLiveData<List<MemsData>>()
     val memes: LiveData<List<MemsData>> get() = _memes
 
@@ -21,15 +23,25 @@ class MemesScreenFragmentViewModel : ViewModel() {
     val loadingState: LiveData<Boolean> get() = _mutableLoadingState
 
     init {
+        handleLoadedData{ Repository.initialize() }
+    }
+
+    fun loadNextPage() {
+        handleLoadedData{ Repository.getPage(currentPage) }
+    }
+
+    private fun handleLoadedData(loadData: suspend () -> MemsResources<List<MemsData>>) {
         viewModelScope.launch {
             _mutableLoadingState.value = true
-            when (val data = Repository.initialize()) {
+            when (val data = loadData()) {
                 is MemsResources.Success -> {
+                    currentPage++
                     _memes.value = data.data!!
                 }
                 is MemsResources.Error -> {
                     _error.value = data.message!!
                 }
+                is MemsResources.Loading -> { }
             }
             _mutableLoadingState.value = false
         }
