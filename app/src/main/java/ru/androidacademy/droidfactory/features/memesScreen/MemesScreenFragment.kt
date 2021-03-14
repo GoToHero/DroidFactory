@@ -1,5 +1,6 @@
 package ru.androidacademy.droidfactory.features.memesScreen
 
+import CarouselAdapter
 import android.Manifest
 import android.animation.LayoutTransition
 import android.content.Context
@@ -10,7 +11,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.Px
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
@@ -51,10 +51,10 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private var preview: CameraSourcePreview? = null
     private var graphicOverlay: GraphicOverlay? = null
 
-    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var layoutManager: CarouselLayoutManager
     private lateinit var adapter: CarouselAdapter
     private lateinit var snapHelper: SnapHelper
-    private lateinit var mems: List<MemsData>
+    private var currentItemId: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,16 +77,16 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
         startCameraSource()
 
 
-        //TODO transfer to viewModel
-        //runBlocking { mems = Repository.initialize().data!! }
-        // Log.d("WTF", mems.joinToString("\n"))
-
         layoutManager = CarouselLayoutManager(requireContext())
         adapter = CarouselAdapter()
         snapHelper = PagerSnapHelper()
 
         viewModel.memes.observe(viewLifecycleOwner, { memList ->
             adapter.bindMems(memList)
+        })
+
+        viewModel.loadingState.observe(viewLifecycleOwner, { isLoaded ->
+            binding.progressBar.isVisible = isLoaded
         })
 
         with(binding.rvMemes) {
@@ -98,8 +98,40 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
             addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
             addItemDecoration(BoundsOffsetDecoration())
 
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                val layoutManagerRef = (layoutManager as CarouselLayoutManager)
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    currentItemId = layoutManagerRef.currentItemId
+                    binding.memeDescriptions.text = getMemById(currentItemId)?.description
+
+
+                    if (layoutManagerRef.findLastCompletelyVisibleItemPosition() == getMemsNumber() - 1) {
+                        loadNextPage()
+                    }
+                }
+            })
+
             snapHelper.attachToRecyclerView(this)
         }
+    }
+
+    private fun getMemById(id: Int?): MemsData? {
+        for (mem in adapter.mems) {
+            if (id == mem.id) {
+                return mem
+            }
+        }
+        return null
+    }
+
+    private fun getMemsNumber(): Int = adapter.itemCount
+
+    private fun loadNextPage() {
+        viewModel.loadNextPage()
     }
 
     class CarouselLayoutManager(
@@ -110,6 +142,8 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
 
         private val prominentThreshold =
             context.resources.getDimensionPixelSize(R.dimen.spacing_18x)
+
+        var currentItemId: Int? = 0
 
         override fun onLayoutCompleted(state: RecyclerView.State?) =
             super.onLayoutCompleted(state).also { scaleChildren() }
@@ -153,11 +187,12 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                 if (translationXFromScale > 0 && i >= 1) {
                     // Edit previous child
                     getChildAt(i - 1)!!.translationX += 2 * translationXFromScale
-
                 } else if (translationXFromScale < 0) {
                     // Pass on to next child
                     translationXForward = 2 * translationXFromScale
                 }
+
+                if (child.isActivated) currentItemId = (child as OverlayableImageView).mem?.id
             }
         }
 
@@ -168,80 +203,6 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
         }
     }
 
-
-    class CarouselAdapter :
-        RecyclerView.Adapter<CarouselAdapter.VH>() {
-
-        private var mems: List<MemsData> = listOf()
-        private var hasInitParentDimensions = false
-        private var maxImageWidth: Int = 0
-        private var maxImageHeight: Int = 0
-        private var maxImageAspectRatio: Float = 1f
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-            // At this point [parent] has been measured and has valid width & height
-            if (!hasInitParentDimensions) {
-                //TODO поиграться с размерами
-                maxImageWidth =
-                    parent.width - 2 * parent.resources.getDimensionPixelSize(R.dimen.spacing_18x)
-                maxImageHeight = parent.height
-                maxImageAspectRatio = maxImageWidth.toFloat() / maxImageHeight.toFloat()
-                hasInitParentDimensions = true
-            }
-
-            return VH(OverlayableImageView(parent.context))
-        }
-
-        override fun onBindViewHolder(vh: VH, position: Int) {
-            val mem = mems[position]
-
-            // Change aspect ratio
-            val imageAspectRatio = mem.aspectRatio
-            val targetImageWidth: Int = if (imageAspectRatio < maxImageAspectRatio) {
-                // Tall image: height = max
-                (maxImageHeight * imageAspectRatio).roundToInt()
-            } else {
-                // Wide image: width = max
-                maxImageWidth
-            }
-            vh.overlayableImageView.layoutParams = RecyclerView.LayoutParams(
-                targetImageWidth,
-                RecyclerView.LayoutParams.MATCH_PARENT
-            )
-
-            // Load image
-            vh.overlayableImageView.mem = mem
-
-            vh.overlayableImageView.setOnClickListener {
-                val rv = vh.overlayableImageView.parent as RecyclerView
-                rv.smoothScrollToCenteredPosition(position)
-            }
-        }
-
-        fun bindMems(newMems: List<MemsData>) {
-            mems = newMems
-            notifyDataSetChanged()
-        }
-
-        private fun RecyclerView.smoothScrollToCenteredPosition(position: Int) {
-            val smoothScroller = object : LinearSmoothScroller(context) {
-                override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int {
-                    val dxToStart = super.calculateDxToMakeVisible(view, SNAP_TO_START)
-                    val dxToEnd = super.calculateDxToMakeVisible(view, SNAP_TO_END)
-
-                    return (dxToStart + dxToEnd) / 2
-                }
-            }
-
-            smoothScroller.targetPosition = position
-            layoutManager?.startSmoothScroll(smoothScroller)
-        }
-
-        override fun getItemCount(): Int = mems.size
-
-        class VH(val overlayableImageView: OverlayableImageView) :
-            RecyclerView.ViewHolder(overlayableImageView)
-    }
 
     class LinearHorizontalSpacingDecoration(@Px private val innerSpacing: Int) :
         RecyclerView.ItemDecoration() {
