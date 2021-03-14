@@ -1,3 +1,5 @@
+package ru.androidacademy.droidfactory.features.memesScreen
+
 import android.animation.LayoutTransition
 import android.content.Context
 import android.graphics.Rect
@@ -24,7 +26,7 @@ import ru.androidacademy.droidfactory.databinding.ViewOverlayableImageBinding
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-class CarouselAdapter :
+class CarouselAdapter(private val listener: OnItemClickedListener) :
     RecyclerView.Adapter<CarouselAdapter.VH>() {
 
     var mems: MutableList<MemsData> = mutableListOf()
@@ -79,6 +81,7 @@ class CarouselAdapter :
         vh.overlayableImageView.setOnClickListener {
             val rv = vh.overlayableImageView.parent as RecyclerView
             rv.smoothScrollToCenteredPosition(position)
+            listener.onItemClicked(mems[position].id)
         }
     }
 
@@ -274,5 +277,9 @@ class CarouselAdapter :
 //                binding.sendButton.isInvisible = !activated
 //            }
         }
+    }
+
+    interface OnItemClickedListener {
+        fun onItemClicked(memId: Int)
     }
 }
