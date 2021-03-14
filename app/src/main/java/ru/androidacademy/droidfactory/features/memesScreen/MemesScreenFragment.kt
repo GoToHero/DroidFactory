@@ -2,40 +2,24 @@ package ru.androidacademy.droidfactory.features.memesScreen
 
 import CarouselAdapter
 import android.Manifest
-import android.animation.LayoutTransition
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Rect
 import android.os.Bundle
-import android.util.AttributeSet
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import androidx.annotation.Px
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 import ru.androidacademy.droidfactory.MemsData
 import ru.androidacademy.droidfactory.R
 import ru.androidacademy.droidfactory.databinding.MemesScreenFragmentBinding
-import ru.androidacademy.droidfactory.databinding.ViewOverlayableImageBinding
 import ru.androidacademy.droidfactory.domain.CameraSource
 import ru.androidacademy.droidfactory.domain.FaceDetectorProcessor
 import ru.androidacademy.droidfactory.domain.FaceResultListener
 import ru.androidacademy.droidfactory.views.*
 import java.io.IOException
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 const val PERMISSIONS_REQUEST_CODE_CAMERA = 3332
 
@@ -132,7 +116,6 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private fun loadNextPage() {
         viewModel.loadNextPage()
     }
-
 
 
     override fun onPause() {
