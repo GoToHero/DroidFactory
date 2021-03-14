@@ -69,10 +69,11 @@ class CarouselAdapter :
         vh.overlayableImageView.mem = mem
 
         if (mem.isLiked) {
-            vh.overlayableImageView.likeIcon.setImageDrawable(ContextCompat.getDrawable(vh.itemView.context, R.drawable.ic_favorite_icon_active))
+            vh.overlayableImageView.likeIcon.setImageDrawable(
+                ContextCompat.getDrawable(vh.itemView.context, R.drawable.ic_favorite_icon_active))
         } else {
-            vh.overlayableImageView.likeIcon.setImageDrawable(ContextCompat.getDrawable(vh.itemView.context, R.drawable.ic_favorite_icon_empty))
-
+            vh.overlayableImageView.likeIcon.setImageDrawable(
+                ContextCompat.getDrawable(vh.itemView.context, R.drawable.ic_favorite_icon_empty))
         }
 
         vh.overlayableImageView.setOnClickListener {
