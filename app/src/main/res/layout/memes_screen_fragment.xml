@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/background_descriptions"
         android:gravity="center"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/spacing_4x"
         android:padding="@dimen/spacing_4x"
         android:minLines="4"
         android:maxLines="4"
