@@ -1,6 +1,5 @@
 package ru.androidacademy.droidfactory.features.memesScreen
 
-import CarouselAdapter
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -26,7 +25,9 @@ import java.io.IOException
 
 const val PERMISSIONS_REQUEST_CODE_CAMERA = 3332
 
-class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResultListener {
+class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment),
+    FaceResultListener,
+    CarouselAdapter.OnItemClickedListener {
 
     private var _binding: MemesScreenFragmentBinding? = null
     private val binding get() = _binding!!
@@ -38,7 +39,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private var graphicOverlay: GraphicOverlay? = null
 
     private lateinit var layoutManager: CarouselAdapter.CarouselLayoutManager
-    private val adapter: CarouselAdapter = CarouselAdapter()
+    private val adapter: CarouselAdapter = CarouselAdapter(this)
     private val snapHelper: SnapHelper = PagerSnapHelper()
     private var currentItemId: Int? = null
 
@@ -207,5 +208,9 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                 }
             }
         }
+    }
+
+    override fun onItemClicked(memId: Int) {
+        viewModel.onItemClicked(memId)
     }
 }
