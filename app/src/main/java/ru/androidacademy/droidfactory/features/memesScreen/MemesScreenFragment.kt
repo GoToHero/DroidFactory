@@ -54,7 +54,6 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private lateinit var layoutManager: CarouselLayoutManager
     private lateinit var adapter: CarouselAdapter
     private lateinit var snapHelper: SnapHelper
-    private lateinit var mems: List<MemsData>
     private var currentItemId: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,6 +89,10 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
             adapter.bindMems(memList)
         })
 
+        viewModel.loadingState.observe(viewLifecycleOwner, { isLoaded ->
+            binding.progressBar.isVisible = isLoaded
+        })
+
         with(binding.rvMemes) {
             setItemViewCacheSize(4)
             layoutManager = this@MemesScreenFragment.layoutManager
@@ -100,11 +103,19 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
             addItemDecoration(BoundsOffsetDecoration())
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                val layoutManagerRef = (layoutManager as CarouselLayoutManager)
+
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    currentItemId = (layoutManager as CarouselLayoutManager).currentItemId
+                    currentItemId = layoutManagerRef.currentItemId
                     binding.memeDescriptions.text = getMemById(currentItemId)?.description
+
+
+                    if (layoutManagerRef.findLastCompletelyVisibleItemPosition() == getMemsNumber() - 1) {
+                        loadNextPage()
+                    }
                 }
             })
 
@@ -113,13 +124,18 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     }
 
     private fun getMemById(id: Int?): MemsData? {
-        for(mem in mems) {
+        for (mem in adapter.mems) {
             if (id == mem.id) {
                 return mem
             }
         }
-
         return null
+    }
+
+    private fun getMemsNumber(): Int = adapter.itemCount
+
+    private fun loadNextPage() {
+        viewModel.loadNextPage()
     }
 
     class CarouselLayoutManager(
@@ -195,7 +211,8 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     class CarouselAdapter :
         RecyclerView.Adapter<CarouselAdapter.VH>() {
 
-        private var mems: List<MemsData> = listOf()
+        var mems: MutableList<MemsData> = mutableListOf()
+            private set
         private var hasInitParentDimensions = false
         private var maxImageWidth: Int = 0
         private var maxImageHeight: Int = 0
@@ -242,7 +259,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
         }
 
         fun bindMems(newMems: List<MemsData>) {
-            mems = newMems
+            mems.addAll(newMems)
             notifyDataSetChanged()
         }
 
