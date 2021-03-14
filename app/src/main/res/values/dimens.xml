@@ -11,5 +11,5 @@
 
     <!-- text sizes -->
     <dimen name="text_size_title">36sp</dimen>
-    <dimen name="text_size_descriptions">24sp</dimen>
+    <dimen name="text_size_descriptions">18sp</dimen>
 </resources>
