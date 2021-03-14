@@ -18,11 +18,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import kotlinx.android.synthetic.main.view_overlayable_image.view.*
 import ru.androidacademy.droidfactory.MemsData
 import ru.androidacademy.droidfactory.R
 import ru.androidacademy.droidfactory.databinding.ViewOverlayableImageBinding
-import ru.androidacademy.droidfactory.features.memesScreen.MemesScreenFragment
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
