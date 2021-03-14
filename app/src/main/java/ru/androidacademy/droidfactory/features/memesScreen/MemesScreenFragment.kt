@@ -10,7 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.snackbar.Snackbar
 import ru.androidacademy.droidfactory.MemsData
 import ru.androidacademy.droidfactory.R
@@ -18,7 +20,8 @@ import ru.androidacademy.droidfactory.databinding.MemesScreenFragmentBinding
 import ru.androidacademy.droidfactory.domain.CameraSource
 import ru.androidacademy.droidfactory.domain.FaceDetectorProcessor
 import ru.androidacademy.droidfactory.domain.FaceResultListener
-import ru.androidacademy.droidfactory.views.*
+import ru.androidacademy.droidfactory.views.CameraSourcePreview
+import ru.androidacademy.droidfactory.views.GraphicOverlay
 import java.io.IOException
 
 const val PERMISSIONS_REQUEST_CODE_CAMERA = 3332
@@ -72,6 +75,8 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
             binding.progressBar.isVisible = isLoaded
         })
 
+        viewModel.likedMem.observe(viewLifecycleOwner, { mem -> adapter.updateMem(mem) })
+
         with(binding.rvMemes) {
             setItemViewCacheSize(4)
             layoutManager = this@MemesScreenFragment.layoutManager
@@ -88,9 +93,11 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    currentItemId = layoutManagerRef.currentItemId
-                    binding.memeDescriptions.text = getMemById(currentItemId)?.description
-
+                    val newCurrentItemId = layoutManagerRef.currentItemId
+                    if (newCurrentItemId != currentItemId) {
+                        currentItemId = newCurrentItemId
+                        binding.memeDescriptions.text = getMemById(currentItemId)?.description
+                    }
 
                     if (layoutManagerRef.findLastCompletelyVisibleItemPosition() == getMemsNumber() - 1) {
                         loadNextPage()

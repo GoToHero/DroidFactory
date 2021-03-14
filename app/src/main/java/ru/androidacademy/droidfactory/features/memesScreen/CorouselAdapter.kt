@@ -86,6 +86,17 @@ class CarouselAdapter :
         notifyDataSetChanged()
     }
 
+    fun updateMem(updatedMem: MemsData) {
+        for (i in mems.indices) {
+            if (updatedMem.id == mems[i].id) {
+                mems.removeAt(i)
+                mems.add(i, updatedMem)
+                notifyItemChanged(i)
+                return
+            }
+        }
+    }
+
     private fun RecyclerView.smoothScrollToCenteredPosition(position: Int) {
         val smoothScroller = object : LinearSmoothScroller(context) {
             override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int {
