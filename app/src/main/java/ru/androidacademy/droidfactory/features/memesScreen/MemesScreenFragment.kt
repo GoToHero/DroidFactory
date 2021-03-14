@@ -32,8 +32,7 @@ import ru.androidacademy.droidfactory.databinding.ViewOverlayableImageBinding
 import ru.androidacademy.droidfactory.domain.CameraSource
 import ru.androidacademy.droidfactory.domain.FaceDetectorProcessor
 import ru.androidacademy.droidfactory.domain.FaceResultListener
-import ru.androidacademy.droidfactory.views.CameraSourcePreview
-import ru.androidacademy.droidfactory.views.GraphicOverlay
+import ru.androidacademy.droidfactory.views.*
 import java.io.IOException
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -51,7 +50,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private var preview: CameraSourcePreview? = null
     private var graphicOverlay: GraphicOverlay? = null
 
-    private lateinit var layoutManager: CarouselAdapter.CarouselLayoutManager
+    private lateinit var layoutManager: CarouselLayoutManager
     private lateinit var adapter: CarouselAdapter
     private lateinit var snapHelper: SnapHelper
     private var currentItemId: Int? = null
@@ -77,7 +76,7 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
         startCameraSource()
 
 
-        layoutManager = CarouselAdapter.CarouselLayoutManager(requireContext())
+        layoutManager = CarouselLayoutManager(requireContext())
         adapter = CarouselAdapter()
         snapHelper = PagerSnapHelper()
 
@@ -95,12 +94,12 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
             adapter = this@MemesScreenFragment.adapter
 
             val spacing = resources.getDimensionPixelSize(R.dimen.spacing_4x)
-            addItemDecoration(CarouselAdapter.LinearHorizontalSpacingDecoration(spacing))
-            addItemDecoration(CarouselAdapter.BoundsOffsetDecoration())
+            addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
+            addItemDecoration(BoundsOffsetDecoration())
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-                val layoutManagerRef = (layoutManager as CarouselAdapter.CarouselLayoutManager)
+                val layoutManagerRef = (layoutManager as CarouselLayoutManager)
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
