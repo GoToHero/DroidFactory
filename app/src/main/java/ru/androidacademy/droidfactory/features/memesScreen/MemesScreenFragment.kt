@@ -88,9 +88,11 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    currentItemId = layoutManagerRef.currentItemId
-                    binding.memeDescriptions.text = getMemById(currentItemId)?.description
-
+                    val newCurrentItemId = layoutManagerRef.currentItemId
+                    if (newCurrentItemId != currentItemId) {
+                        currentItemId = newCurrentItemId
+                        binding.memeDescriptions.text = getMemById(currentItemId)?.description
+                    }
 
                     if (layoutManagerRef.findLastCompletelyVisibleItemPosition() == getMemsNumber() - 1) {
                         loadNextPage()
