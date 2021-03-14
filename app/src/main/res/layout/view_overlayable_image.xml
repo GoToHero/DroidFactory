@@ -17,15 +17,26 @@
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
 
-    <androidx.constraintlayout.widget.Guideline
+    <!--<androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_hor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.15">
-    </androidx.constraintlayout.widget.Guideline>
+    </androidx.constraintlayout.widget.Guideline>-->
 
-    <com.airbnb.lottie.LottieAnimationView
+    <ImageView
+        android:id="@+id/likeIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_favorite_icon_empty"
+        app:layout_constraintEnd_toEndOf="@id/image_view"
+        app:layout_constraintTop_toTopOf="@id/image_view"
+        />
+
+    <!--<com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animationView"
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -34,6 +45,6 @@
         app:layout_constraintTop_toBottomOf="@id/guideline_hor"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/like_animation" />
+        app:lottie_rawRes="@raw/like_animation" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

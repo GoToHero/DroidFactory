@@ -6,8 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.Px
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -16,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import kotlinx.android.synthetic.main.view_overlayable_image.view.*
 import ru.androidacademy.droidfactory.MemsData
 import ru.androidacademy.droidfactory.R
 import ru.androidacademy.droidfactory.databinding.ViewOverlayableImageBinding
@@ -66,6 +69,13 @@ class CarouselAdapter :
 
         // Load image
         vh.overlayableImageView.mem = mem
+
+        if (mem.isLiked) {
+            vh.overlayableImageView.likeIcon.setImageDrawable(ContextCompat.getDrawable(vh.itemView.context, R.drawable.ic_favorite_icon_active))
+        } else {
+            vh.overlayableImageView.likeIcon.setImageDrawable(ContextCompat.getDrawable(vh.itemView.context, R.drawable.ic_favorite_icon_empty))
+
+        }
 
         vh.overlayableImageView.setOnClickListener {
             val rv = vh.overlayableImageView.parent as RecyclerView
@@ -216,6 +226,8 @@ class CarouselAdapter :
         private val binding =
             ViewOverlayableImageBinding.inflate(LayoutInflater.from(context), this, true)
 
+        var likeIcon: ImageView = binding.likeIcon
+
         var mem: MemsData? = null
             set(value) {
                 field = value
@@ -235,6 +247,7 @@ class CarouselAdapter :
 
                 }
             }
+
 
 
         init {
