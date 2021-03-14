@@ -38,8 +38,8 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     private var graphicOverlay: GraphicOverlay? = null
 
     private lateinit var layoutManager: CarouselAdapter.CarouselLayoutManager
-    private lateinit var adapter: CarouselAdapter
-    private lateinit var snapHelper: SnapHelper
+    private val adapter: CarouselAdapter = CarouselAdapter()
+    private val snapHelper: SnapHelper = PagerSnapHelper()
     private var currentItemId: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,17 +55,6 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
 
         preview = binding.scannerView
         graphicOverlay = binding.graphicOverlay
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkCameraPermission()
-        startCameraSource()
-
-
-        layoutManager = CarouselAdapter.CarouselLayoutManager(requireContext())
-        adapter = CarouselAdapter()
-        snapHelper = PagerSnapHelper()
 
         viewModel.memes.observe(viewLifecycleOwner, { memList ->
             adapter.bindMems(memList)
@@ -76,6 +65,12 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
         })
 
         viewModel.likedMem.observe(viewLifecycleOwner, { mem -> adapter.updateMem(mem) })
+
+        initRecyclerViewComponents()
+    }
+
+    private fun initRecyclerViewComponents() {
+        layoutManager = CarouselAdapter.CarouselLayoutManager(requireContext())
 
         with(binding.rvMemes) {
             setItemViewCacheSize(4)
@@ -107,6 +102,12 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
 
             snapHelper.attachToRecyclerView(this)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkCameraPermission()
+        startCameraSource()
     }
 
     private fun getMemById(id: Int?): MemsData? {
