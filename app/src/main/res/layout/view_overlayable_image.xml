@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:padding="@dimen/spacing_0_5x"
-        android:background="@drawable/white_border"
+        android:background="@drawable/background_mem"
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
 

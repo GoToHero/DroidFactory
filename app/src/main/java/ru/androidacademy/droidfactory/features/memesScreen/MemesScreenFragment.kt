@@ -64,7 +64,15 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
             binding.progressBar.isVisible = isLoaded
         })
 
-        viewModel.likedMem.observe(viewLifecycleOwner, { mem -> adapter.updateMem(mem) })
+        viewModel.likedMem.observe(viewLifecycleOwner, { mem ->
+
+            preview?.foreground = context?.getDrawable(R.drawable.green_border)
+            adapter.updateMem(mem)
+            preview?.postDelayed(
+                { preview?.foreground = context?.getDrawable(R.drawable.white_border)}, 300
+            )
+
+        })
 
         initRecyclerViewComponents()
     }
@@ -189,7 +197,6 @@ class MemesScreenFragment : Fragment(R.layout.memes_screen_fragment), FaceResult
     }
 
     override fun onReceiveFaceLike() {
-        //TODO нужно кидать сюда айди мема
         viewModel.onLike(currentItemId ?: -1)
     }
 

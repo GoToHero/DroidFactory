@@ -55,7 +55,7 @@ class FaceDetectorProcessor(context: Context, val listener: FaceResultListener) 
 
   override fun onSuccess(faces: List<Face>, graphicOverlay: GraphicOverlay) {
     for (face in faces) {
-      graphicOverlay.add(FaceGraphic(graphicOverlay, face))
+//      graphicOverlay.add(FaceGraphic(graphicOverlay, face))
       resolveSmile(face.smilingProbability)
     }
   }

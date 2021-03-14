@@ -14,7 +14,7 @@
         style="@style/TextView.Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/title_memes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,25 +48,22 @@
         app:layout_constraintTop_toBottomOf="@id/meme_descriptions"
         app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.constraintlayout.widget.Group
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:constraint_referenced_ids="scannerView"
-        />
-
     <ru.androidacademy.droidfactory.views.CameraSourcePreview
         android:id="@+id/scannerView"
         android:layout_width="100dp"
-        android:layout_height="150dp"
+        android:layout_height="120dp"
+        android:padding="5dp"
+        android:foreground="@drawable/white_border"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="40dp"
         />
 
     <ru.androidacademy.droidfactory.views.GraphicOverlay
         android:id="@+id/graphic_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="@id/scannerView"
         app:layout_constraintStart_toStartOf="@id/scannerView"
         app:layout_constraintEnd_toEndOf="@id/scannerView"
